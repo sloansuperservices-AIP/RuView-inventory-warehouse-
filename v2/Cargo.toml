@@ -46,6 +46,11 @@ members = [
     # PR #491 slot heuristic with a Candle network + Stoer-Wagner fusion.
     # Motivated by #499 ghost-skeleton reports.
     "crates/cog-person-count",
+    # ADR-266: WiFi-CSI package-flow tracker — turns an existing shop-floor AP
+    # grid into a mesh of directional RF tripwires and does zone-to-zone package
+    # flow accounting (counts pallet/tote/forklift crossings at gates). Passive,
+    # no tags/cameras. Ships a self-contained simulator + live dashboard.
+    "crates/cog-package-flow",
     # ADR-116: Home Assistant + Matter Cognitum Seed cog. Wraps the
     # ADR-115 MQTT publisher as a Seed-installable artifact with
     # mDNS, embedded broker, RuVector thresholds, Ed25519 witness.

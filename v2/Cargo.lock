@@ -1008,6 +1008,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "cog-package-flow"
+version = "0.3.0"
+dependencies = [
+ "approx",
+ "axum",
+ "clap",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "ureq 2.12.1",
+]
+
+[[package]]
 name = "cog-person-count"
 version = "0.3.0"
 dependencies = [
@@ -7533,7 +7549,6 @@ dependencies = [
  "tokio-test",
  "toml 0.8.23",
  "tracing",
- "wifi-densepose-core",
 ]
 
 [[package]]
@@ -11275,17 +11290,6 @@ dependencies = [
  "serde_json",
  "thiserror 2.0.18",
  "wifi-densepose-geo",
-]
-
-[[package]]
-name = "wifi-densepose-worldmodel"
-version = "0.3.1"
-dependencies = [
- "serde",
- "serde_json",
- "thiserror 2.0.18",
- "tokio",
- "wifi-densepose-worldgraph",
 ]
 
 [[package]]

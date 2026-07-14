@@ -25,6 +25,7 @@ Dual codebase: Python v1 (`v1/`) and Rust port (`v2/`).
 | `vendor/rufield` (submodule) | **RuField MFS** — the open spec for camera-free multimodal field sensing (ADR-260). A common `FieldEvent`/`FieldTensor`/`FusionGraph`/`PrivacyClass`/`ProvenanceReceipt` model *above* WiFi CSI/CIR/BFLD, UWB, BLE Channel Sounding, mmWave radar, ultrasound, subsonic, infrared, and quantum sensors. Lives in its own repo ([github.com/ruvnet/rufield](https://github.com/ruvnet/rufield)), vendored here under `vendor/rufield`. Not a `v2/` workspace member. v0.1 reference stack = 7 crates (`rufield-core`/`-provenance`/`-privacy`/`-adapters`/`-fusion`/`-bench`/`-viewer`), 72 tests/0 failed; `rufield-viewer` is an Axum + vanilla-JS read-only dashboard (`cargo run -p rufield-viewer`) completing ADR-260 §27.9. The WiFi-CSI modality is now **real-replay-backed** via `CsiReplayAdapter` (ingests real captured `.csi.jsonl` → fused presence/breathing inferences; replay-from-file, unlabeled CSI-variance proxy, not validated accuracy); mmWave/thermal + all synthetic-bench F1 numbers remain **SYNTHETIC** (no live hardware — live streaming + labeled accuracy are roadmap). |
 | `wifi-densepose-rufield` | ADR-262 P1 **anti-corruption bridge** — converts RuView WiFi-CSI sensing output (`SensingSnapshot` mirroring `SensingUpdate` + `TrustedOutput`, owned primitives, no dep on `wifi-densepose-sensing-server`) into **signed RuField `FieldEvent`s** (`Modality::WifiCsi`, real `timestamp_ns`, sha256 + ed25519 provenance, `synthetic=false`). The single coupling point between RuView and the standalone RuField MFS spec (§5.4); path-deps the `vendor/rufield` submodule crates (`rufield-core`/`-provenance`/`-privacy`/`-fusion`). **Critical §3.3 privacy mapping** (`map_privacy`): maps RuView class → RuField P0–P5 by **information content, never byte value**, fail-closed (`Derived → P4/P5`, never P1; `demoted` floors to ≥ P2). 15 tests / 0 failed (round-trip / `is_fusable` / fusion-ingest / privacy-safety / determinism). P1 plumbing — not wired into the live server (P3), no accuracy claim. |
 | `ruview-swarm` | Drone swarm control system (ADR-148) — hierarchical-mesh topology, Raft consensus, MARL, CSI sensing payload, MAVLink/PX4 compat, Ruflo AI-agent integration |
+| `cog-package-flow` | ADR-266 Cognitum Cog — **WiFi-CSI package-flow tracker**. Turns an existing shop-floor AP grid (~50 ft spacing) into a mesh of **directional RF tripwires**: adjacent bistatic-link "sensing lines" form gates, firing order gives crossing direction, zones do package flow accounting (per-gate forward/reverse counts, per-zone net flow, coarse tote/carton/pallet/forklift size class). Counts **flow events, not static inventory**; passive (no tags/cameras/barcodes). Ships a deterministic synthetic warehouse (`simulate`/`serve`, `synthetic=true`) + self-contained Axum live dashboard; real `run` path polls `wifi-densepose-sensing-server` (node→link map is `data_gated` until per-site calibrated). Pure Rust, mirrors `cog-person-count`. 17 tests / 0 failed. |
 
 ### RuvSense Modules (`signal/src/ruvsense/`)
 | Module | Purpose |
@@ -62,7 +63,7 @@ All 5 ruvector crates integrated in workspace:
 - `ruvector-attention` → `model.rs` (apply_spatial_attention) + `bvp.rs`
 
 ### Architecture Decisions
-182 ADRs in `docs/adr/` (numbered ADR-001 through ADR-265, with gaps). Key ones:
+183 ADRs in `docs/adr/` (numbered ADR-001 through ADR-266, with gaps). Key ones:
 - ADR-014: SOTA signal processing (Accepted)
 - ADR-015: MM-Fi + Wi-Pose training datasets (Accepted)
 - ADR-016: RuVector training pipeline integration (Accepted — complete)
@@ -81,6 +82,7 @@ All 5 ruvector crates integrated in workspace:
 - ADR-263: `@ruvnet/ruview` npm harness deep review + optimization strategy (Proposed)
 - ADR-264: `@ruvnet/rvagent` MCP server + `@ruv/ruview-cli` deep review + optimization strategy (Proposed)
 - ADR-265: RuView npm distribution strategy — CI gate, provenance, version single-sourcing (Proposed)
+- ADR-266: WiFi-CSI package-flow tracker (`cog-package-flow`) — directional RF tripwires over an existing AP grid; flow-event counting, not static inventory (Proposed)
 
 ### Supported Hardware
 
