@@ -105,8 +105,9 @@ function draw(s){
     const x0=X(z.x_lo)-15, x1=X(z.x_hi)+15;
     map.appendChild(el("rect",{x:x0,y:PAD.t-8,width:Math.max(2,x1-x0),height:H+16,rx:8,
       fill:i%2?"rgba(56,189,248,.05)":"rgba(148,163,184,.05)",stroke:"var(--line)"}));
-    const t=el("text",{x:(x0+x1)/2,y:PAD.t-16,"text-anchor":"middle",fill:"var(--muted)","font-size":12});
-    t.textContent=`${z.name}  (Δ ${z.net>0?'+':''}${z.net})`; map.appendChild(t);
+    const cx=Math.max(46,Math.min(VB.w-46,(x0+x1)/2)); // keep label inside the viewBox
+    const t=el("text",{x:cx,y:PAD.t-16,"text-anchor":"middle",fill:"var(--muted)","font-size":12});
+    t.textContent=`${z.name} (Δ ${z.net>0?'+':''}${z.net})`; map.appendChild(t);
   });
 
   // links colored by energy
